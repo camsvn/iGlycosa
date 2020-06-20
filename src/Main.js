@@ -1,5 +1,13 @@
 import React from 'react';
-import {PixelRatio, Dimensions, View, ScrollView, Image} from 'react-native';
+import {
+  PixelRatio,
+  Dimensions,
+  View,
+  ScrollView,
+  Image,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 
@@ -31,6 +39,44 @@ const graph = [
   },
 ];
 
+const logData = [
+  {
+    id: '1',
+    gcount: 105,
+    time: '11:00 PM',
+  },
+  {
+    id: '2',
+    gcount: 90,
+    time: '07:00 PM',
+  },
+  {
+    id: '3',
+    gcount: 125,
+    time: '05:00 PM',
+  },
+  {
+    id: '4',
+    gcount: 85,
+    time: '03:00 PM',
+  },
+  {
+    id: '5',
+    gcount: 99,
+    time: '1:00 PM',
+  },
+  {
+    id: '6',
+    gcount: 105,
+    time: '11:00 AM',
+  },
+  {
+    id: '7',
+    gcount: 130,
+    time: '08:00 AM',
+  },
+];
+
 function wp(percentage) {
   const value = (percentage * viewportWidth) / 100;
   return Math.round(value);
@@ -52,7 +98,16 @@ class Main extends React.Component {
     super(props);
     this.state = {
       slider1ActiveSlide: SLIDER_1_FIRST_ITEM,
+      uploadMode: true,
     };
+  }
+
+  _handleUploadModePress() {
+    this.setState({uploadMode: true});
+  }
+
+  _handleAnalyzeModePress() {
+    this.setState({uploadMode: false});
   }
 
   _renderItem({item, index}) {
@@ -97,6 +152,7 @@ class Main extends React.Component {
   }
 
   render() {
+    const {uploadMode} = this.state;
     return (
       <Block color="primary">
         {/**
@@ -112,7 +168,13 @@ class Main extends React.Component {
           |--------------------------------------------------
         */}
         <Block flex={0.615}>
+          {/**
+           * Chart + Pagination Container
+           */}
           <Block center>
+            {/**
+             * Chart View
+             */}
             <Block
               flex={false}
               style={{
@@ -135,6 +197,9 @@ class Main extends React.Component {
                 }
               />
             </Block>
+            {/**
+             * ChartPagination View
+             */}
             <Block flex={false} style={{top: '-27%'}}>
               <Pagination
                 dotsLength={graph.length}
@@ -154,6 +219,50 @@ class Main extends React.Component {
               />
             </Block>
           </Block>
+          {/**
+           * Log Container
+           */}
+          <Block
+            style={{
+              // borderWidth: 3,
+              // borderColor: 'white',
+              position: 'absolute',
+              height: hd(18),
+              width: viewportWidth,
+              top: '61%',
+              justifyContent: 'space-around',
+            }}>
+            <FlatList
+              data={logData}
+              horizontal={true}
+              renderItem={({item}) => (
+                <Block
+                  flex={false}
+                  color={item.gcount > 100 ? 'ternary' : 'secondary'}
+                  card
+                  middle
+                  width={wp(25)}
+                  style={{marginHorizontal: 4, justifyContent: 'flex-end'}}>
+                  <Block flex={false} style={{top: '-3%'}}>
+                    <Text center large black style={{top: '8%'}}>
+                      {item.gcount}
+                    </Text>
+                    <Text center mediumBold black style={{top: '-5%'}}>
+                      mg/dL
+                    </Text>
+                    <Text
+                      small
+                      accent
+                      style={{marginLeft: '12%', bottom: '3%'}}>
+                      {item.time}
+                    </Text>
+                  </Block>
+                </Block>
+              )}
+              keyExtractor={item => item.id}
+              showsHorizontalScrollIndicator={false}
+            />
+          </Block>
         </Block>
 
         {/**
@@ -162,9 +271,14 @@ class Main extends React.Component {
         |--------------------------------------------------
         */}
         <Block flex={0.1} style={{borderTopWidth: 2, borderColor: 'white'}}>
+          {/**
+           * Eye Scanner Icon
+           */}
           <Block
             flex={false}
             card
+            // middle
+            // button
             color="accent"
             style={{
               height: proportionedPixel(60),
@@ -173,18 +287,36 @@ class Main extends React.Component {
               position: 'absolute',
               top: -proportionedPixel(30),
               left: wd(50) - proportionedPixel(29),
-            }}
-          />
+            }}>
+            <TouchableOpacity>
+              <Image
+                resizeMode="center"
+                source={{
+                  uri: `https://ik.imagekit.io/spczdrnbec/tr:w-${proportionedPixel(
+                    60,
+                  ) * PixelRatio.get()}/eyeScanner_ZhtRkGxK8.png`,
+                }}
+                style={{
+                  height: '100%',
+                  marginHorizontal: wd(1),
+                  // top: -wd(0.5),
+                }}
+              />
+            </TouchableOpacity>
+          </Block>
           {/**
            * Footer Mode Switch Container
            */}
           <Block row center space="around">
             <Block
               flex={false}
+              button
+              onPress={this._handleAnalyzeModePress.bind(this)}
               style={{
                 borderWidth: 1,
                 borderRadius: 300,
                 borderColor: 'white',
+                backgroundColor: uploadMode ? null : 'white',
                 paddingHorizontal: 15,
                 paddingVertical: 4,
                 // marginHorizontal: wp(2),
@@ -195,11 +327,14 @@ class Main extends React.Component {
             </Block>
             <Block
               flex={false}
-              color="accent"
+              // color="accent"
+              button
+              onPress={this._handleUploadModePress.bind(this)}
               style={{
                 borderWidth: 1,
                 borderRadius: 300,
                 borderColor: 'white',
+                backgroundColor: uploadMode ? 'white' : null,
                 paddingHorizontal: 15,
                 paddingVertical: 4,
                 marginLeft: wp(10),

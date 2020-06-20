@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 
 import {spacing, proportionedPixel} from '../../constants/DimensionConstants';
 import {colors} from '../../constants/ColorConstants';
@@ -8,7 +8,7 @@ export default class Block extends Component {
   render() {
     const {
       flex,
-      scroll,
+      button,
       height,
       width,
       row,
@@ -48,11 +48,11 @@ export default class Block extends Component {
       style, // rewrite predefined styles
     ];
 
-    if (scroll) {
+    if (button) {
       return (
-        <ScrollView style={blockStyles} {...props}>
+        <TouchableOpacity style={blockStyles} {...props}>
           {children}
-        </ScrollView>
+        </TouchableOpacity>
       );
     }
 

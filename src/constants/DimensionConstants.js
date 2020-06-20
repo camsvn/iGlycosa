@@ -11,10 +11,10 @@ const widthPercentageToDP = widthPercent => {
 const heightPercentageToDP = heightPercent => {
   const screenHeight = Dimensions.get('window').height;
   const elemHeight = parseFloat(heightPercent);
-  console.log(heightPercent);
-  console.log(
-    PixelRatio.roundToNearestPixel((screenHeight * elemHeight) / 100),
-  );
+  // console.log(heightPercent);
+  // console.log(
+  //   PixelRatio.roundToNearestPixel((screenHeight * elemHeight) / 100),
+  // );
   return PixelRatio.roundToNearestPixel((screenHeight * elemHeight) / 100);
 };
 
