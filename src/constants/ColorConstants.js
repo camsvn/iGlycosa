@@ -6,6 +6,7 @@ const colors = {
   lightred: '#E0BDBD',
   lightgreen: '#A9D9D7',
   black: '#00000F',
+  grey: '#707070',
 };
 
 export {colors};

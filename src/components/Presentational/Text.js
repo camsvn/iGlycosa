@@ -23,8 +23,10 @@ export default class Typography extends Component {
       lightred,
       lightgreen,
       black,
+      grey,
       //styling
       center,
+      middle,
       right,
       //general
       style,
@@ -51,8 +53,10 @@ export default class Typography extends Component {
       lightred && styles.lightred,
       lightgreen && styles.lightgreen,
       black && styles.black,
+      grey && styles.grey,
       //align
       center && styles.center,
+      middle && styles.middle,
       right && styles.right,
       //overwrite styles
       style,
@@ -75,7 +79,9 @@ const styles = StyleSheet.create({
   lightred: {color: colors.lightred},
   lightgreen: {color: colors.lightgreen},
   black: {color: colors.black},
+  grey: {color: colors.grey},
   //position
   center: {textAlign: 'center'},
+  middle: {textAlignVertical: 'center'},
   right: {textAlign: 'right'},
 });
