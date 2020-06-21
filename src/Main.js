@@ -7,12 +7,14 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 
 // import Text from './components/Presentational/Text';
 import {Block, Text} from './components/Presentational';
+import {colors} from './constants/ColorConstants';
 
 import {
   proportionedPixel,
@@ -21,20 +23,26 @@ import {
 } from './constants/DimensionConstants';
 
 const SLIDER_1_FIRST_ITEM = 1;
+
+const icon = {
+  redArrow: `https://ik.imagekit.io/spczdrnbec/tr:w-${proportionedPixel(
+    80,
+  )}/Red_Arrow_QC7kAQGl4.png`,
+  greenArrow: `https://ik.imagekit.io/spczdrnbec/tr:w-${proportionedPixel(
+    80,
+  )}/Green_Arrow_BjkEZJ6Xk.png`,
+};
 const graph = [
   {
     title: 'Graph 1',
-    color: 'white',
     illustration: 'https://i.imgur.com/UYiroysl.jpg',
   },
   {
     title: 'Main Graph',
-    color: 'white',
     illustration: 'https://i.imgur.com/UPrs1EWl.jpg',
   },
   {
     title: 'Graph 2',
-    color: 'white',
     illustration: 'https://i.imgur.com/MABUbpDl.jpg',
   },
 ];
@@ -117,11 +125,11 @@ class Main extends React.Component {
           style={{
             height: '85%',
             width: itemWidth,
-            backgroundColor: item.color,
+            backgroundColor: 'white',
             borderRadius: 15,
             justifyContent: 'center',
             alignItems: 'center',
-            elevation: 30,
+            elevation: 20,
           }}>
           {/* <Image
             source={{uri: item.illustration}}
@@ -155,34 +163,84 @@ class Main extends React.Component {
     const {uploadMode} = this.state;
     return (
       <Block color="primary">
+        <StatusBar
+          // translucent={true}
+          backgroundColor={'#076C63'}
+          barStyle="light-content"
+        />
         {/**
         |--------------------------------------------------
         | Header Container
         |--------------------------------------------------
         */}
-        <Block flex={0.285} color="secondary" />
+        <Block flex={0.285} center color="secondary">
+          <Block flex={false} row center style={{height: '45%'}}>
+            <Block
+              flex={0.5}
+              style={
+                {
+                  // borderWidth: 2,
+                  // borderColor: 'coral',
+                }
+              }
+            />
+            {/* <Block style={{width: '1%', height: '80%', borderWidth: 2}}> */}
+            <Block
+              flex={false}
+              // color="primary"
+              style={{
+                height: '90%',
+                // width: '0.5%',
+                borderRadius: 5,
+                borderWidth: 2,
+                borderColor: colors.primary,
+              }}
+            />
+            {/* </Block> */}
+            <Block
+              flex={0.5}
+              style={
+                {
+                  // borderWidth: 2,
+                  // borderColor: 'blue',
+                }
+              }
+            />
+          </Block>
+          <Block
+            flex={false}
+            // color="primary"
+            style={{
+              // height: '1.25%',
+              width: '95%',
+              borderRadius: 5,
+              borderWidth: 2,
+              borderColor: colors.primary,
+            }}
+          />
+        </Block>
 
         {/**
           |--------------------------------------------------
           | Body Container
           |--------------------------------------------------
         */}
-        <Block flex={0.615}>
+        <Block flex={0.615} style={{}}>
           {/**
            * Chart + Pagination Container
            */}
-          <Block center>
+          <Block flex={0.68} center style={{}}>
             {/**
              * Chart View
              */}
             <Block
               flex={false}
               style={{
-                height: '76%',
+                height: '115%',
                 // borderWidth: 2,
                 // borderColor: 'blue',
                 width: '100%',
-                top: '-23%',
+                top: '-33%',
               }}>
               <Carousel
                 data={graph}
@@ -200,7 +258,27 @@ class Main extends React.Component {
             {/**
              * ChartPagination View
              */}
-            <Block flex={false} style={{top: '-27%'}}>
+            {/* <Block flex={false} style={{top: '-39%'}}>
+              <Pagination
+                dotsLength={graph.length}
+                activeDotIndex={this.state.slider1ActiveSlide}
+                // containerStyle={styles.paginationContainer}
+                dotColor={'rgba(255, 255, 255, 0.92)'}
+                dotStyle={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 4,
+                  marginHorizontal: 8,
+                }}
+                inactiveDotColor={'rgba(255, 255, 255, 0.6)'}
+                inactiveDotOpacity={0.4}
+                inactiveDotScale={0.6}
+                carouselRef={this._slider1Ref}
+              />
+            </Block> */}
+          </Block>
+          <Block flex={0.04} center style={{}}>
+            <Block style={{position: 'absolute', top: '-410%'}}>
               <Pagination
                 dotsLength={graph.length}
                 activeDotIndex={this.state.slider1ActiveSlide}
@@ -223,26 +301,58 @@ class Main extends React.Component {
            * Log Container
            */}
           <Block
+            flex={0.3}
             style={{
               // borderWidth: 3,
               // borderColor: 'white',
-              position: 'absolute',
-              height: hd(18),
+              // position: 'absolute',
+              // height: hd(18),
               width: viewportWidth,
-              top: '61%',
+              // top: '61%',
               justifyContent: 'space-around',
             }}>
             <FlatList
               data={logData}
               horizontal={true}
+              style={{top: '-30%', position: 'absolute', height: '100%'}}
               renderItem={({item}) => (
                 <Block
-                  flex={false}
+                  // flex={false}
                   color={item.gcount > 100 ? 'ternary' : 'secondary'}
                   card
                   middle
-                  width={wp(25)}
-                  style={{marginHorizontal: 4, justifyContent: 'flex-end'}}>
+                  height={'100%'}
+                  width={wd(26)}
+                  style={{
+                    marginHorizontal: 4,
+                    justifyContent: 'flex-end',
+                  }}>
+                  <Block
+                    flex={false}
+                    style={{
+                      borderBottomWidth: 2,
+                      borderColor:
+                        item.gcount > 100
+                          ? 'rgba(224,189,189,0.3)'
+                          : 'rgba(169,217,215,0.3)',
+                      height: '100%',
+                      width: '100%',
+                      position: 'absolute',
+                      top: '-69%',
+                      // left: '-22%',
+                    }}>
+                    <Image
+                      resizeMode="center"
+                      source={{
+                        uri:
+                          item.gcount > 100 ? icon.redArrow : icon.greenArrow,
+                      }}
+                      style={{
+                        height: '100%',
+                        top: '35%',
+                      }}
+                    />
+                  </Block>
                   <Block flex={false} style={{top: '-3%'}}>
                     <Text center large black style={{top: '8%'}}>
                       {item.gcount}
@@ -270,7 +380,9 @@ class Main extends React.Component {
         | Footer Container
         |--------------------------------------------------
         */}
-        <Block flex={0.1} style={{borderTopWidth: 2, borderColor: 'white'}}>
+        <Block
+          flex={0.1}
+          style={{borderTopWidth: 1, borderColor: colors.accent}}>
           {/**
            * Eye Scanner Icon
            */}
@@ -332,6 +444,7 @@ class Main extends React.Component {
                 backgroundColor: uploadMode ? null : 'white',
                 paddingHorizontal: 15,
                 paddingVertical: 4,
+                elevation: uploadMode ? null : 8,
                 // marginHorizontal: wp(2),
               }}>
               <Text small grey center middle>
@@ -350,7 +463,8 @@ class Main extends React.Component {
                 backgroundColor: uploadMode ? 'white' : null,
                 paddingHorizontal: 15,
                 paddingVertical: 4,
-                marginLeft: wp(10),
+                marginLeft: wd(10),
+                elevation: uploadMode ? 8 : null,
               }}>
               <Text small grey center middle>
                 Upload mode

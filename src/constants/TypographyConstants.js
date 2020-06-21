@@ -3,16 +3,20 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from './DimensionConstants';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, PixelRatio} from 'react-native';
+
+let fontScaleFactor = 0.8500000238418579;
+let fontScale = PixelRatio.getFontScale();
 
 const fontSize = {
-  h1: proportionedPixel(55),
-  h2: proportionedPixel(48),
-  h3: proportionedPixel(42),
-  h4: proportionedPixel(34),
-  h5: proportionedPixel(28),
-  h6: proportionedPixel(22),
-  body: proportionedPixel(15),
+  // h1: fontScale >= 1 ? 55 * fontScaleFactor : 55,
+  h1: (55 * fontScaleFactor) / fontScale,
+  h2: (48 * fontScaleFactor) / fontScale,
+  h3: (42 * fontScaleFactor) / fontScale,
+  h4: (34 * fontScaleFactor) / fontScale,
+  h5: (28 * fontScaleFactor) / fontScale,
+  h6: (22 * fontScaleFactor) / fontScale,
+  body: (15 * fontScaleFactor) / fontScale,
 };
 
 const font = {
