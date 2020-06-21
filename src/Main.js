@@ -289,12 +289,25 @@ class Main extends React.Component {
               left: wd(50) - proportionedPixel(29),
             }}>
             <TouchableOpacity>
+              {/* <Image
+                resizeMode="center"
+                source={{
+                  uri: `https://ik.imagekit.io/spczdrnbec/tr:w-${proportionedPixel(
+                    60,
+                  ) * PixelRatio.get()}/eyeScanerGreen_eYQ5fQ51N.png`,
+                }}
+                style={{
+                  height: '100%',
+                  marginHorizontal: wd(1),
+                  // top: -wd(0.5),
+                }}
+              /> */}
               <Image
                 resizeMode="center"
                 source={{
                   uri: `https://ik.imagekit.io/spczdrnbec/tr:w-${proportionedPixel(
                     60,
-                  ) * PixelRatio.get()}/eyeScanner_ZhtRkGxK8.png`,
+                  ) * PixelRatio.get()}/eyeScannerGreen_fX8TsdJxQ.gif`,
                 }}
                 style={{
                   height: '100%',
