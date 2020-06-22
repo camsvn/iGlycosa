@@ -11,6 +11,7 @@ export default class Typography extends Component {
       //fontSize
       size,
       //preset
+      xlarge,
       large,
       mediumBold,
       mediumSemiBold,
@@ -38,6 +39,7 @@ export default class Typography extends Component {
       //default
       typography.body,
       //preset
+      xlarge && typography.xlargeText,
       large && typography.largeText,
       mediumBold && typography.mediumTextBold,
       mediumSemiBold && typography.mediumTextSemiBold,

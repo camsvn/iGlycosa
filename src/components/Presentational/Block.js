@@ -104,4 +104,5 @@ const styles = StyleSheet.create({
   lightred: {backgroundColor: colors.lightred},
   lightgreen: {backgroundColor: colors.lightgreen},
   black: {backgroundColor: colors.black},
+  red: {backgroundColor: colors.red},
 });

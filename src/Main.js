@@ -26,11 +26,11 @@ const SLIDER_1_FIRST_ITEM = 1;
 
 const icon = {
   redArrow: `https://ik.imagekit.io/spczdrnbec/tr:w-${proportionedPixel(
-    80,
-  )}/Red_Arrow_QC7kAQGl4.png`,
+    100,
+  )}/Red_Arrow_4A2brBmXb.png`,
   greenArrow: `https://ik.imagekit.io/spczdrnbec/tr:w-${proportionedPixel(
-    80,
-  )}/Green_Arrow_BjkEZJ6Xk.png`,
+    100,
+  )}/Green_Arrow_Z28vrSA-_.png`,
 };
 const graph = [
   {
@@ -163,11 +163,7 @@ class Main extends React.Component {
     const {uploadMode} = this.state;
     return (
       <Block color="primary">
-        <StatusBar
-          // translucent={true}
-          backgroundColor={'#076C63'}
-          barStyle="light-content"
-        />
+        <StatusBar backgroundColor={'#076C63'} barStyle="light-content" />
         {/**
         |--------------------------------------------------
         | Header Container
@@ -182,8 +178,41 @@ class Main extends React.Component {
                   // borderWidth: 2,
                   // borderColor: 'coral',
                 }
-              }
-            />
+              }>
+              <Block flex={0.4} row middle center space="evenly">
+                <Text mediumSemiBold black>
+                  11:00 PM
+                </Text>
+                <Block
+                  flex={false}
+                  style={{
+                    height: 5,
+                    width: 5,
+                    borderWidth: 3,
+                    borderRadius: 3,
+                    borderColor: colors.black,
+                  }}
+                />
+                <Text
+                  mediumSemiBold
+                  black
+                  center
+                  style={{
+                    borderWidth: 1,
+                    borderColor: colors.warningRed,
+                    backgroundColor: colors.warningRed,
+                    borderRadius: 15,
+                    paddingHorizontal: 10,
+                  }}>
+                  HIGH
+                </Text>
+              </Block>
+              <Block flex={0.6}>
+                <Text xlarge accent center style={{top: '-15%'}}>
+                  125
+                </Text>
+              </Block>
+            </Block>
             {/* <Block style={{width: '1%', height: '80%', borderWidth: 2}}> */}
             <Block
               flex={false}
@@ -193,7 +222,7 @@ class Main extends React.Component {
                 // width: '0.5%',
                 borderRadius: 5,
                 borderWidth: 2,
-                borderColor: colors.primary,
+                borderColor: 'rgba(0,0,15,0.6)',
               }}
             />
             {/* </Block> */}
@@ -204,8 +233,41 @@ class Main extends React.Component {
                   // borderWidth: 2,
                   // borderColor: 'blue',
                 }
-              }
-            />
+              }>
+              <Block flex={0.4} row middle center space="evenly">
+                <Text
+                  mediumSemiBold
+                  black
+                  center
+                  style={{
+                    borderWidth: 1,
+                    borderColor: colors.safeGreen,
+                    backgroundColor: colors.safeGreen,
+                    borderRadius: 15,
+                    paddingHorizontal: 10,
+                  }}>
+                  E-A1C
+                </Text>
+                <Block
+                  flex={false}
+                  style={{
+                    height: 5,
+                    width: 5,
+                    borderWidth: 3,
+                    borderRadius: 3,
+                    borderColor: colors.black,
+                  }}
+                />
+                <Text mediumSemiBold black>
+                  90 DAYS
+                </Text>
+              </Block>
+              <Block flex={0.6}>
+                <Text xlarge accent center style={{top: '-15%'}}>
+                  6.4
+                </Text>
+              </Block>
+            </Block>
           </Block>
           <Block
             flex={false}
@@ -215,7 +277,7 @@ class Main extends React.Component {
               width: '95%',
               borderRadius: 5,
               borderWidth: 2,
-              borderColor: colors.primary,
+              borderColor: 'rgba(0,0,15,0.6)',
             }}
           />
         </Block>
@@ -321,22 +383,29 @@ class Main extends React.Component {
                   color={item.gcount > 100 ? 'ternary' : 'secondary'}
                   card
                   middle
+                  center
                   height={'100%'}
                   width={wd(26)}
                   style={{
-                    marginHorizontal: 4,
+                    marginHorizontal: 6,
                     justifyContent: 'flex-end',
+                    // borderWidth: 1,
+                    // borderColor:
+                    //   item.gcount > 100
+                    //     ? 'rgba(224,189,189,0.3)'
+                    //     : 'rgba(169,217,215,0.3)',
                   }}>
                   <Block
                     flex={false}
                     style={{
                       borderBottomWidth: 2,
-                      borderColor:
-                        item.gcount > 100
-                          ? 'rgba(224,189,189,0.3)'
-                          : 'rgba(169,217,215,0.3)',
+                      // borderColor:
+                      //   item.gcount > 100
+                      //     ? 'rgba(224,189,189,0.3)'
+                      //     : 'rgba(169,217,215,0.3)',
+                      borderColor: 'rgba(68,69,85,0.8)',
                       height: '100%',
-                      width: '100%',
+                      width: '80%',
                       position: 'absolute',
                       top: '-69%',
                       // left: '-22%',
@@ -363,7 +432,9 @@ class Main extends React.Component {
                     <Text
                       small
                       accent
-                      style={{marginLeft: '12%', bottom: '3%'}}>
+                      center
+                      // style={{marginLeft: '12%', bottom: '3%'}}
+                    >
                       {item.time}
                     </Text>
                   </Block>
@@ -393,12 +464,15 @@ class Main extends React.Component {
             // button
             color="accent"
             style={{
-              height: proportionedPixel(60),
-              width: proportionedPixel(60),
+              height: proportionedPixel(56),
+              width: proportionedPixel(56),
               zIndex: 2,
               position: 'absolute',
-              top: -proportionedPixel(30),
-              left: wd(50) - proportionedPixel(29),
+              top: -proportionedPixel(28),
+              left: wd(50) - proportionedPixel(27),
+              borderWidth: 1,
+              // elevation: 5,
+              transform: [{rotate: '45deg'}],
             }}>
             <TouchableOpacity>
               {/* <Image
@@ -424,6 +498,7 @@ class Main extends React.Component {
                 style={{
                   height: '100%',
                   marginHorizontal: wd(1),
+                  transform: [{rotate: '-45deg'}],
                   // top: -wd(0.5),
                 }}
               />

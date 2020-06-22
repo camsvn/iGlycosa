@@ -10,6 +10,7 @@ let fontScale = PixelRatio.getFontScale();
 
 const fontSize = {
   // h1: fontScale >= 1 ? 55 * fontScaleFactor : 55,
+  xh1: (65 * fontScaleFactor) / fontScale,
   h1: (55 * fontScaleFactor) / fontScale,
   h2: (48 * fontScaleFactor) / fontScale,
   h3: (42 * fontScaleFactor) / fontScale,
@@ -28,6 +29,10 @@ const font = {
 };
 
 const typography = StyleSheet.create({
+  xlargeText: {
+    fontFamily: font.proximaNovaExtraBold,
+    fontSize: fontSize.xh1,
+  },
   largeText: {
     fontFamily: font.proximaNovaExtraBold,
     fontSize: fontSize.h1,
