@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
-
-import {spacing, proportionedPixel} from '../../constants/DimensionConstants';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
+// local imports
+import {spacing} from '../../constants/DimensionConstants';
 import {colors} from '../../constants/ColorConstants';
 
 export default class Block extends Component {
@@ -11,6 +11,7 @@ export default class Block extends Component {
       button,
       height,
       width,
+      top,
       row,
       column,
       center,
@@ -30,10 +31,9 @@ export default class Block extends Component {
       styles.block,
       flex && {flex},
       flex === false && {flex: 0},
-      //   height && {height: proportionedPixel(height)},
-      //   width && {width: proportionedPixel(width)},
       height && {height: height},
       width && {width: width},
+      top && {top: top},
       row && styles.row,
       column && styles.column,
       center && styles.center,

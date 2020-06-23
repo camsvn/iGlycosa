@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {Text, StyleSheet} from 'react-native';
-
+// local imports
 import {typography} from '../../constants/TypographyConstants';
 import {colors} from '../../constants/ColorConstants';
-import {proportionedPixel} from '../../constants/DimensionConstants';
 
 export default class Typography extends Component {
   render() {
@@ -29,6 +28,7 @@ export default class Typography extends Component {
       center,
       middle,
       right,
+      top,
       //general
       style,
       children,
@@ -45,7 +45,6 @@ export default class Typography extends Component {
       mediumSemiBold && typography.mediumTextSemiBold,
       small && typography.accentBody,
       //custom font size
-      // size && {fontSize: proportionedPixel(size)},
       size && {fontSize: size},
       //color
       accent && styles.accent,
@@ -60,6 +59,7 @@ export default class Typography extends Component {
       center && styles.center,
       middle && styles.middle,
       right && styles.right,
+      top && {top: top},
       //overwrite styles
       style,
     ];

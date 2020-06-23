@@ -1,15 +1,9 @@
-import {
-  proportionedPixel,
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from './DimensionConstants';
 import {StyleSheet, PixelRatio} from 'react-native';
 
 let fontScaleFactor = 0.8500000238418579;
 let fontScale = PixelRatio.getFontScale();
 
 const fontSize = {
-  // h1: fontScale >= 1 ? 55 * fontScaleFactor : 55,
   xh1: (65 * fontScaleFactor) / fontScale,
   h1: (55 * fontScaleFactor) / fontScale,
   h2: (48 * fontScaleFactor) / fontScale,
