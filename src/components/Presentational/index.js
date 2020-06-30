@@ -1,5 +1,18 @@
 import Block from './Block';
 import Text from './Text';
 import {Divider, DiabeticMeasure, Indicator, SwitchButton} from './Utils';
+import Camera from './Camera';
+import Mask from './ScannerMask';
+import HoleView from './HoleView';
 
-export {Block, Text, Divider, DiabeticMeasure, Indicator, SwitchButton};
+export {
+  Block,
+  Text,
+  Divider,
+  DiabeticMeasure,
+  Indicator,
+  SwitchButton,
+  Camera,
+  Mask,
+  HoleView,
+};
