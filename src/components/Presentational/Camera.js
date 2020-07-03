@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import {
   TouchableOpacity,
+  StatusBar,
   Alert,
   StyleSheet,
   View,
@@ -121,10 +122,17 @@ export default class Camera extends PureComponent {
                   flex: 0.25,
                   // borderWidth: 2,
                   // borderColor: 'blue',
-                  marginTop: '9%',
+                  // marginTop: '100%',
+                  marginTop: StatusBar.currentHeight + P2w(3),
                   marginLeft: '3%',
                 }}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  style={
+                    {
+                      // marginTop: StatusBar.currentHeight,
+                      // marginLeft: '3%',
+                    }
+                  }>
                   <Image
                     style={{
                       height: 40,

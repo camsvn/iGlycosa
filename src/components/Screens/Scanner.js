@@ -3,7 +3,7 @@ import Camera from '../Presentational/Camera';
 import {
   StatusBar,
   Image,
-  Dimensions,
+  StyleSheet,
   View,
   PermissionsAndroid,
   Platform,
@@ -13,8 +13,15 @@ import {
 
 import RNFS from 'react-native-fs';
 import ImageEditor from '@react-native-community/image-editor';
+
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from '../../constants/DimensionConstants';
 import {colors} from '../../constants/ColorConstants';
 import {icons} from '../../constants/ImageConstants';
+///Global Constnats
+var PATH = RNFS.ExternalStorageDirectoryPath + '/iGlycosa';
 
 async function hasAndroidPermission() {
   const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
@@ -27,11 +34,6 @@ async function hasAndroidPermission() {
   return status === 'granted';
 }
 
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
-var path = RNFS.ExternalStorageDirectoryPath + '/iGlycosa';
-// var path = '/storage/emulated/0/iGlycosa/';
-
 const createFileName = () => {
   var today = new Date();
   var year = today.getFullYear();
@@ -42,22 +44,7 @@ const createFileName = () => {
   var second = ('0' + today.getSeconds()).slice(-2);
   var millisecond = ('00' + today.getMilliseconds()).slice(-3);
 
-  // console.log(month);
-  // console.log(date);
-  // console.log(hour);
-  // console.log(minute);
-  // console.log(second);
-  // console.log(millisecond);
-
   return `/iG_${year}${month}${date}_${hour}${minute}${second}${millisecond}.jpg`;
-};
-
-const P2w = P => {
-  return Math.round(P * width) / 100;
-};
-
-const P2h = P => {
-  return Math.round(P * height) / 100;
 };
 
 const squareImage = (edgeLength, imgLength) => {
@@ -104,16 +91,14 @@ export default class example extends React.Component {
     if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
       return;
     }
-    // console.log(RNFS.ExternalStorageDirectoryPath + '/iGlycosa');
-    RNFS.mkdir(path);
-    await RNFS.copyFile(uri, path + createFileName()).then(() =>
+    RNFS.mkdir(PATH);
+    await RNFS.copyFile(uri, PATH + createFileName()).then(() =>
       ToastAndroid.show(
         'Saved to "/storage/emulated/0/iGlycosa/"',
         ToastAndroid.SHORT,
       ),
     );
     this.onBackToCamera();
-    // CameraRoll.save(uri, {type: 'photo', album: 'iGlycosa'});
   }
 
   render() {
@@ -126,79 +111,17 @@ export default class example extends React.Component {
           barStyle="light-content"
         />
         {img ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: colors.primary,
-            }}>
-            <View
-              style={{
-                width: '95%',
-                height: P2h(61),
-                justifyContent: 'space-around',
-                alignItems: 'center',
-                // borderWidth: 5,
-                // borderLeftWidth: 15,
-                // borderRightWidth: 15,
-                // borderTopWidth: 15,
-                // borderColor: colors.accent,
-                borderTopLeftRadius: 10,
-                borderTopRightRadius: 10,
-                borderBottomLeftRadius: 5,
-                borderBottomRightRadius: 5,
-                backgroundColor: colors.accent,
-              }}>
-              <Image
-                source={{uri: img}}
-                style={{
-                  //   flex: 1,
-                  width: P2w(90.25),
-                  height: P2w(85.25),
-                  borderRadius: 5,
-                  //   borderBottomLeftRadius: 5,
-                  //   borderBottomRightRadius: 5,
-                  marginTop: '2.5%',
-                }}
-              />
-              <View
-                style={{
-                  width: '95%',
-                  flexDirection: 'row',
-                  justifyContent: 'space-around',
-                  //   alignItems: 'flex-end',
-                  //   marginVertical: '2%',
-                }}>
+          <View style={styles.mainContainer}>
+            <View style={styles.photoFrame}>
+              <Image source={{uri: img}} style={styles.squareImage} />
+              <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   onPress={() => {
                     this.onBackToCamera();
                   }}
-                  style={{
-                    flex: 0.5,
-                    // backgroundColor: 'coral',
-                    height: 50,
-                    width: 50,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    // marginVertical: '4%',
-                  }}>
-                  {/* <Text
-                  style={{
-                    color: 'white',
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                    fontSize: 28,
-                  }}>
-                  Cancel
-                </Text> */}
+                  style={styles.btnCancelContainer}>
                   <Image
-                    style={{
-                      height: 60,
-                      width: 60,
-                      // borderWidth: 2,
-                      // borderColor: 'red',
-                    }}
+                    style={styles.imgCancel}
                     resizeMode="center"
                     source={{
                       uri: icons.cancelButton,
@@ -209,31 +132,9 @@ export default class example extends React.Component {
                   onPress={() => {
                     this.savePicture(img);
                   }}
-                  style={{
-                    flex: 0.5,
-                    // backgroundColor: 'coral',
-                    height: 50,
-                    width: 50,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    // marginVertical: '10%',
-                  }}>
-                  {/* <Text
-                  style={{
-                    color: 'white',
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                    fontSize: 28,
-                  }}>
-                  Save
-                </Text> */}
+                  style={styles.btnAcceptContainer}>
                   <Image
-                    style={{
-                      height: 60,
-                      width: 60,
-                      // borderWidth: 2,
-                      // borderColor: 'red',
-                    }}
+                    style={styles.imgAccept}
                     resizeMode="center"
                     source={{
                       uri: icons.acceptButton,
@@ -250,3 +151,56 @@ export default class example extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+  },
+  photoFrame: {
+    width: '95%',
+    height: hp(61),
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
+    backgroundColor: colors.accent,
+  },
+  squareImage: {
+    width: wp(90.25),
+    height: wp(85.25),
+    borderRadius: 5,
+    marginTop: '2.5%',
+  },
+  buttonContainer: {
+    width: '95%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  btnCancelContainer: {
+    flex: 0.5,
+    height: 50,
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imgCancel: {
+    height: 60,
+    width: 60,
+  },
+  btnAcceptContainer: {
+    flex: 0.5,
+    height: 50,
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imgAccept: {
+    height: 60,
+    width: 60,
+  },
+});
