@@ -1,6 +1,12 @@
 import Block from './Block';
 import Text from './Text';
-import {Divider, DiabeticMeasure, Indicator, SwitchButton} from './Utils';
+import {
+  Divider,
+  DiabeticMeasure,
+  Indicator,
+  SwitchButton,
+  ImgPrevActionButton,
+} from './Utils';
 import Camera from './Camera';
 import Mask from './ScannerMask';
 import HoleView from './HoleView';
@@ -15,4 +21,5 @@ export {
   Camera,
   Mask,
   HoleView,
+  ImgPrevActionButton,
 };

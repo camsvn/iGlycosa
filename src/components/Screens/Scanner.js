@@ -7,21 +7,31 @@ import {
   View,
   PermissionsAndroid,
   Platform,
+  Text,
   ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
-
+// 3rd-Party package imports
 import RNFS from 'react-native-fs';
 import ImageEditor from '@react-native-community/image-editor';
-
+// local imports
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from '../../constants/DimensionConstants';
 import {colors} from '../../constants/ColorConstants';
 import {icons} from '../../constants/ImageConstants';
-///Global Constnats
+import {
+  squareImage,
+  createFileName,
+  uriToBlob,
+} from '../../constants/functionalConstants';
+import {Toast} from '../Presentational/Utils';
+import {ImgPrevActionButton} from '../Presentational';
+import {isEye} from '../../constants/api';
+// Global Constants
 var PATH = RNFS.ExternalStorageDirectoryPath + '/iGlycosa';
+var controller;
 
 async function hasAndroidPermission() {
   const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
@@ -34,33 +44,21 @@ async function hasAndroidPermission() {
   return status === 'granted';
 }
 
-const createFileName = () => {
-  var today = new Date();
-  var year = today.getFullYear();
-  var month = ('0' + today.getMonth()).slice(-2);
-  var date = ('0' + today.getDate()).slice(-2);
-  var hour = ('0' + today.getHours()).slice(-2);
-  var minute = ('0' + today.getMinutes()).slice(-2);
-  var second = ('0' + today.getSeconds()).slice(-2);
-  var millisecond = ('00' + today.getMilliseconds()).slice(-3);
-
-  return `/iG_${year}${month}${date}_${hour}${minute}${second}${millisecond}.jpg`;
-};
-
-const squareImage = (edgeLength, imgLength) => {
-  return Math.round((edgeLength - imgLength) / 2);
-};
-
 export default class example extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       oimg: null,
       img: null,
+      isEye: false,
+      isEyePdComplete: false,
+      AbortController: null,
     };
   }
 
-  async onPicture(data) {
+  async _onPicture(data) {
+    controller = new AbortController();
+    const {signal} = controller;
     this.setState({oimg: data.uri});
     const finderWidth = Math.round(data.width * 0.48);
     // console.log(finderWidth);
@@ -75,21 +73,36 @@ export default class example extends React.Component {
       const croppedImageURI = await ImageEditor.cropImage(data.uri, cropData);
       if (croppedImageURI) {
         this.setState({img: croppedImageURI});
+        uriToBlob(croppedImageURI)
+          .then(blob => isEye(blob, signal))
+          .then(res => {
+            if (res) {
+              this.setState({isEyePdComplete: true});
+              res === 'eye' && this.setState({isEye: true});
+              // Toast(res);
+              console.log(res);
+            }
+          })
+          .catch(err => {
+            Toast(err.message);
+            console.log(err);
+          });
       }
     } catch (cropError) {
       console.log(cropError);
     }
   }
 
-  async onBackToCamera() {
+  async _onBackToCamera() {
+    controller.abort();
     await RNFS.unlink(this.state.oimg);
     await RNFS.unlink(this.state.img);
-    this.setState({img: null, oimg: null});
+    this.setState({img: null, oimg: null, isEyePdComplete: false});
   }
 
-  async savePicture(uri) {
+  async _savePicture(uri) {
     if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
-      return;
+      return ToastAndroid.show('Permission Denied!', ToastAndroid.SHORT);
     }
     RNFS.mkdir(PATH);
     await RNFS.copyFile(uri, PATH + createFileName()).then(() =>
@@ -98,11 +111,11 @@ export default class example extends React.Component {
         ToastAndroid.SHORT,
       ),
     );
-    this.onBackToCamera();
+    this._onBackToCamera();
   }
 
   render() {
-    const {img} = this.state;
+    const {img, isEyePdComplete, isEye} = this.state;
     return (
       <View style={{flex: 1}}>
         <StatusBar
@@ -110,42 +123,55 @@ export default class example extends React.Component {
           translucent
           barStyle="light-content"
         />
+
         {img ? (
           <View style={styles.mainContainer}>
+            <TouchableOpacity
+              onPress={() => this._onBackToCamera()}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                marginTop: StatusBar.currentHeight + wp(3),
+                marginLeft: '3%',
+              }}>
+              <Image
+                style={{
+                  height: 40,
+                  width: 40,
+                }}
+                resizeMode="center"
+                source={{
+                  uri: icons.close,
+                }}
+              />
+            </TouchableOpacity>
             <View style={styles.photoFrame}>
               <Image source={{uri: img}} style={styles.squareImage} />
               <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.onBackToCamera();
-                  }}
-                  style={styles.btnCancelContainer}>
-                  <Image
-                    style={styles.imgCancel}
-                    resizeMode="center"
-                    source={{
-                      uri: icons.cancelButton,
-                    }}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.savePicture(img);
-                  }}
-                  style={styles.btnAcceptContainer}>
-                  <Image
-                    style={styles.imgAccept}
-                    resizeMode="center"
-                    source={{
-                      uri: icons.acceptButton,
-                    }}
-                  />
-                </TouchableOpacity>
+                {isEyePdComplete ? (
+                  isEye ? (
+                    <>
+                      {/* <ImgPrevActionButton
+                      icon={icons.cancelButton}
+                      action={() => this._onBackToCamera()}
+                    /> */}
+                      <ImgPrevActionButton
+                        icon={icons.acceptButton}
+                        action={() => this._savePicture(img)}
+                      />
+                    </>
+                  ) : (
+                    <Text>NotEye</Text>
+                  )
+                ) : (
+                  <Text>Analyzing</Text>
+                )}
               </View>
             </View>
           </View>
         ) : (
-          <Camera onPicture={this.onPicture.bind(this)} />
+          <Camera onPicture={this._onPicture.bind(this)} />
         )}
       </View>
     );

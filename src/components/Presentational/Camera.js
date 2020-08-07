@@ -15,6 +15,7 @@ import {colors} from '../../constants/ColorConstants';
 import {icons} from '../../constants/ImageConstants';
 import Mask from '../Presentational/ScannerMask';
 import Text from '../Presentational/Text';
+import {widthPercentageToDP as wp} from '../../constants/DimensionConstants';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -98,8 +99,8 @@ export default class Camera extends PureComponent {
               buttonNegative: 'Cancel',
             }}>
             <Mask
-              width={P2w(60)}
-              height={P2w(60)}
+              width={wp(60)}
+              height={wp(60)}
               edgeHeight={50}
               edgeWidth={50}
               edgeBorderWidth={8}
@@ -123,7 +124,7 @@ export default class Camera extends PureComponent {
                   // borderWidth: 2,
                   // borderColor: 'blue',
                   // marginTop: '100%',
-                  marginTop: StatusBar.currentHeight + P2w(3),
+                  marginTop: StatusBar.currentHeight + wp(3),
                   marginLeft: '3%',
                 }}>
                 <TouchableOpacity

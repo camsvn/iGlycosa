@@ -1,4 +1,5 @@
 import React from 'react';
+import {TouchableOpacity, Image, StyleSheet, ToastAndroid} from 'react-native';
 
 import Block from './Block';
 import Text from './Text';
@@ -79,4 +80,44 @@ const SwitchButton = props => {
   );
 };
 
-export {Divider, DiabeticMeasure, Indicator, SwitchButton};
+const ImgPrevActionButton = props => {
+  const {action, icon} = props;
+  return (
+    <TouchableOpacity onPress={action} style={styles.actionBtnContainer}>
+      <Image
+        style={styles.imgIcon}
+        resizeMode="center"
+        source={{
+          uri: icon,
+        }}
+      />
+    </TouchableOpacity>
+  );
+};
+
+const Toast = msg => {
+  ToastAndroid.show(msg, ToastAndroid.SHORT);
+};
+
+export {
+  Divider,
+  DiabeticMeasure,
+  Indicator,
+  SwitchButton,
+  ImgPrevActionButton,
+  Toast,
+};
+
+const styles = StyleSheet.create({
+  actionBtnContainer: {
+    flex: 0.5,
+    height: 50,
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imgIcon: {
+    height: 60,
+    width: 60,
+  },
+});
