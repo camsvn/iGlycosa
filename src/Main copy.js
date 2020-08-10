@@ -4,6 +4,6 @@ import Scanner from './components/Screens/Scanner';
 
 export default class Main extends Component {
   render() {
-    return <Home />;
+    return <Scanner />;
   }
 }

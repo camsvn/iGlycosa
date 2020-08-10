@@ -97,7 +97,12 @@ export default class example extends React.Component {
     controller.abort();
     await RNFS.unlink(this.state.oimg);
     await RNFS.unlink(this.state.img);
-    this.setState({img: null, oimg: null, isEyePdComplete: false});
+    this.setState({
+      img: null,
+      oimg: null,
+      isEyePdComplete: false,
+      isEye: false,
+    });
   }
 
   async _savePicture(uri) {
@@ -162,7 +167,7 @@ export default class example extends React.Component {
                       />
                     </>
                   ) : (
-                    <Text>NotEye</Text>
+                    <Text>Eye not found! ReTake the image</Text>
                   )
                 ) : (
                   <Text>Analyzing</Text>
