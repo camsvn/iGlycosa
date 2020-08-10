@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "android": "npx react-native run-android",
+    "ios": "npx react-native run-ios",
     "start": "react-native start",
     "start2": "react-native start --port 8082",
     "start3": "react-native start --port 8083",
@@ -15,6 +15,7 @@
     "@react-native-community/image-editor": "^2.3.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.7.3",
+    "@react-navigation/stack": "^5.9.0",
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-native-camera": "^3.30.0",

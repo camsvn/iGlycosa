@@ -29,6 +29,7 @@ import {
 import {Toast} from '../Presentational/Utils';
 import {ImgPrevActionButton} from '../Presentational';
 import {isEye} from '../../constants/api';
+import {SafeAreaView} from 'react-native-safe-area-context';
 // Global Constants
 var PATH = RNFS.ExternalStorageDirectoryPath + '/iGlycosa';
 var controller;
@@ -52,8 +53,13 @@ export default class example extends React.Component {
       img: null,
       isEye: false,
       isEyePdComplete: false,
-      AbortController: null,
     };
+    console.log(this.props.route.params.mode ? 'Upload Mode' : 'Analyze Mode');
+  }
+
+  _handleCloseClick() {
+    const {navigation} = this.props;
+    navigation.goBack();
   }
 
   async _onPicture(data) {
@@ -122,10 +128,12 @@ export default class example extends React.Component {
   render() {
     const {img, isEyePdComplete, isEye} = this.state;
     return (
-      <View style={{flex: 1}}>
+      // <View style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1}}>
         <StatusBar
-          backgroundColor="rgba(0,0,15,0.3)"
-          translucent
+          backgroundColor={'#076C63'}
+          // backgroundColor="rgba(0,0,15,0.3)"
+          // translucent
           barStyle="light-content"
         />
 
@@ -137,7 +145,7 @@ export default class example extends React.Component {
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                marginTop: StatusBar.currentHeight + wp(3),
+                marginTop: wp(3),
                 marginLeft: '3%',
               }}>
               <Image
@@ -176,9 +184,13 @@ export default class example extends React.Component {
             </View>
           </View>
         ) : (
-          <Camera onPicture={this._onPicture.bind(this)} />
+          <Camera
+            onPicture={this._onPicture.bind(this)}
+            onClose={this._handleCloseClick.bind(this)}
+          />
         )}
-      </View>
+      </SafeAreaView>
+      // </View>
     );
   }
 }

@@ -66,14 +66,7 @@ export default class Camera extends PureComponent {
 
   render() {
     return (
-      <View
-        style={{
-          flex: 1,
-          //   borderWidth: 3,
-          //   borderColor: 'yellow',
-          //   justifyContent: 'center',
-          //   alignItems: 'center',
-        }}>
+      <View style={{flex: 1}}>
         <View
           style={{
             flex: 1,
@@ -124,16 +117,11 @@ export default class Camera extends PureComponent {
                   // borderWidth: 2,
                   // borderColor: 'blue',
                   // marginTop: '100%',
-                  marginTop: StatusBar.currentHeight + wp(3),
+                  // marginTop: StatusBar.currentHeight + wp(3),
+                  marginTop: wp(3),
                   marginLeft: '3%',
                 }}>
-                <TouchableOpacity
-                  style={
-                    {
-                      // marginTop: StatusBar.currentHeight,
-                      // marginLeft: '3%',
-                    }
-                  }>
+                <TouchableOpacity onPress={this.props.onClose}>
                   <Image
                     style={{
                       height: 40,

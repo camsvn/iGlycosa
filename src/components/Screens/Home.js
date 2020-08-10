@@ -5,9 +5,11 @@ import {
   TouchableOpacity,
   StatusBar,
   StyleSheet,
+  View,
 } from 'react-native';
 // 3rd-Party package imports
 import Carousel, {Pagination} from 'react-native-snap-carousel';
+import {SafeAreaView} from 'react-native-safe-area-context';
 // local imports
 import {
   Block,
@@ -40,6 +42,11 @@ class Main extends React.Component {
 
   _handleOnSnapToItem(index) {
     this.setState({slider1ActiveSlide: index});
+  }
+
+  _handleScannerClick() {
+    const {navigation} = this.props;
+    navigation.navigate('Scanner', {mode: this.state.uploadMode});
   }
 
   _handleUploadModePress() {
@@ -102,7 +109,7 @@ class Main extends React.Component {
   render() {
     const {uploadMode} = this.state;
     return (
-      <Block color="primary">
+      <SafeAreaView style={{flex: 1, backgroundColor: colors.primary}}>
         <StatusBar backgroundColor={'#076C63'} barStyle="light-content" />
         {/**
         |--------------------------------------------------
@@ -192,7 +199,7 @@ class Main extends React.Component {
         */}
         <Block flex={0.1} style={styles.footerContainer}>
           <Block card color="accent" style={styles.scannerButtonContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this._handleScannerClick.bind(this)}>
               <Image
                 style={styles.scannerIcon}
                 resizeMode="center"
@@ -220,7 +227,7 @@ class Main extends React.Component {
             />
           </Block>
         </Block>
-      </Block>
+      </SafeAreaView>
     );
   }
 }
