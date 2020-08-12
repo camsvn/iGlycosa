@@ -1,3 +1,50 @@
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import {createFileName} from './functionalConstants';
+
+// const dataCollection = await firestore().collection('Datas').get();
+function getdata() {
+  firestore()
+    .collection('Datas')
+    .get()
+    .then(res => console.log('res', res.docs.length));
+  // console.log('fetched', users.docs);
+}
+
+async function add_data(img, mode, gread) {
+  try {
+    await firestore()
+      .collection('Datas')
+      .add({
+        user: 'admin',
+        g_reading: gread,
+        img_url: await uploadToFirebase(img, mode, gread),
+        isUpload: mode,
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      });
+    return 'Image Uploaded';
+  } catch (error) {
+    return error;
+  }
+}
+
+const uploadToFirebase = async (img, mode, gread) => {
+  var storageRef = storage().ref(
+    `${
+      mode ? (gread > 100 ? 'diabetic' : 'notDiabetic') : 'analyse'
+    }${createFileName()}`,
+  );
+
+  const snapShot = await storageRef.putFile(img);
+  // console.log('Image uploaded to the bucket!');
+  // console.log(snapShot.metadata);
+  const uri = await storage()
+    .ref(snapShot.metadata.fullPath)
+    .getDownloadURL();
+
+  return uri;
+};
+
 const isEye = (blob, signal) => {
   return new Promise((resolve, reject) => {
     fetch(
@@ -24,4 +71,4 @@ const isEye = (blob, signal) => {
   });
 };
 
-export {isEye};
+export {isEye, getdata, add_data, uploadToFirebase};

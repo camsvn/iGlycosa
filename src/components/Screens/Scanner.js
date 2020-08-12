@@ -28,7 +28,7 @@ import {
 } from '../../constants/functionalConstants';
 import {Toast} from '../Presentational/Utils';
 import {ImgPrevActionButton} from '../Presentational';
-import {isEye} from '../../constants/api';
+import {isEye, getdata, add_data, uploadToFirebase} from '../../constants/api';
 import {SafeAreaView} from 'react-native-safe-area-context';
 // Global Constants
 var PATH = RNFS.ExternalStorageDirectoryPath + '/iGlycosa';
@@ -55,6 +55,9 @@ export default class example extends React.Component {
       isEyePdComplete: false,
     };
     console.log(this.props.route.params.mode ? 'Upload Mode' : 'Analyze Mode');
+    // getdata();
+    // console.log(geturl('iG_20200712_030518974.jpg'));
+    // add_data();
   }
 
   _handleCloseClick() {
@@ -112,16 +115,24 @@ export default class example extends React.Component {
   }
 
   async _savePicture(uri) {
-    if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
-      return ToastAndroid.show('Permission Denied!', ToastAndroid.SHORT);
-    }
-    RNFS.mkdir(PATH);
-    await RNFS.copyFile(uri, PATH + createFileName()).then(() =>
-      ToastAndroid.show(
-        'Saved to "/storage/emulated/0/iGlycosa/"',
-        ToastAndroid.SHORT,
-      ),
-    );
+    // if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
+    //   return ToastAndroid.show('Permission Denied!', ToastAndroid.SHORT);
+    // }
+    // RNFS.mkdir(PATH);
+    // await RNFS.copyFile(uri, PATH + createFileName()).then(() =>
+    //   ToastAndroid.show(
+    //     'Saved to "/storage/emulated/0/iGlycosa/"',
+    //     ToastAndroid.SHORT,
+    //   ),
+    // );
+    // await add_data(this.state.img, this.props.route.params.mode, 105);
+    // uploadToFirebase(this.state.img, createFileName()).then(res =>
+    //   console.log(res),
+    // );
+    // uploadToFirebase(this.state.img).then(res => console.log(res));
+    add_data(this.state.img, this.props.route.params.mode, 105)
+      .then(msg => Toast(msg))
+      .catch(err => Toast(err.message));
     this._onBackToCamera();
   }
 

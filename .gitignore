@@ -23,11 +23,13 @@ DerivedData
 
 # Android/IntelliJ
 #
+google-services.json
 build/
 .idea
 .gradle
 local.properties
 *.iml
+*.hprof
 
 # node.js
 #

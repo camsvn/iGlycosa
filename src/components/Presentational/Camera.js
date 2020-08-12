@@ -47,7 +47,7 @@ export default class Camera extends PureComponent {
       };
 
       this.setState({takingPic: true});
-      const ratios = await this.camera.getSupportedRatiosAsync();
+      // const ratios = await this.camera.getSupportedRatiosAsync();
       // console.log(ratios);
 
       try {

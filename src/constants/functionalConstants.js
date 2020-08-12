@@ -11,6 +11,17 @@ async function hasAndroidPermission() {
   return status === 'granted';
 }
 
+function makeid(length) {
+  var result = '';
+  var characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 const createFileName = () => {
   var today = new Date();
   var year = today.getFullYear();
@@ -21,7 +32,9 @@ const createFileName = () => {
   var second = ('0' + today.getSeconds()).slice(-2);
   var millisecond = ('00' + today.getMilliseconds()).slice(-3);
 
-  return `/iG_${year}${month}${date}_${hour}${minute}${second}${millisecond}.jpg`;
+  return `/iG_${year}${month}${date}_${hour}${minute}${second}${millisecond}_${makeid(
+    8,
+  )}.jpg`;
 };
 
 const squareImage = (edgeLength, imgLength) => {
