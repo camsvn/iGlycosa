@@ -8,6 +8,7 @@ import {
   PermissionsAndroid,
   Platform,
   Text,
+  TextInput,
   ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
@@ -45,6 +46,53 @@ async function hasAndroidPermission() {
   return status === 'granted';
 }
 
+const TextIP = ({onValueChange}) => {
+  const [value, setValue] = React.useState('90');
+
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        bottom: '7%',
+        left: '10%',
+        // borderColor: colors.accent,
+        // borderWidth: 2,
+        display: 'flex',
+        // width: '80%',
+        flexDirection: 'row',
+      }}>
+      <TextInput
+        onChangeText={text => {
+          setValue(text);
+          onValueChange(text);
+        }}
+        value={value}
+        keyboardType="decimal-pad"
+        maxLength={3}
+        style={{
+          // zIndex: 10000,
+          borderColor: colors.accent,
+          borderBottomWidth: 2,
+          fontSize: 24,
+          color: colors.ternary,
+          marginRight: 3,
+          // position: 'absolute',
+          // bottom: '7%',
+          // left: '10%',
+        }}
+      />
+      <Text
+        style={{
+          textAlignVertical: 'center',
+          fontSize: 28,
+          color: colors.safeGreen,
+        }}>
+        mg / dL
+      </Text>
+    </View>
+  );
+};
+
 export default class example extends React.Component {
   constructor(props) {
     super(props);
@@ -53,11 +101,16 @@ export default class example extends React.Component {
       img: null,
       isEye: false,
       isEyePdComplete: false,
+      g_reading: 90,
     };
     console.log(this.props.route.params.mode ? 'Upload Mode' : 'Analyze Mode');
     // getdata();
     // console.log(geturl('iG_20200712_030518974.jpg'));
     // add_data();
+  }
+
+  _handleChange(val) {
+    this.setState({g_reading: parseInt(val)});
   }
 
   _handleCloseClick() {
@@ -125,12 +178,8 @@ export default class example extends React.Component {
     //     ToastAndroid.SHORT,
     //   ),
     // );
-    // await add_data(this.state.img, this.props.route.params.mode, 105);
-    // uploadToFirebase(this.state.img, createFileName()).then(res =>
-    //   console.log(res),
-    // );
     // uploadToFirebase(this.state.img).then(res => console.log(res));
-    add_data(this.state.img, this.props.route.params.mode, 105)
+    add_data(this.state.img, this.props.route.params.mode, this.state.g_reading)
       .then(msg => Toast(msg))
       .catch(err => Toast(err.message));
     this._onBackToCamera();
@@ -193,6 +242,7 @@ export default class example extends React.Component {
                 )}
               </View>
             </View>
+            <TextIP onValueChange={this._handleChange.bind(this)} />
           </View>
         ) : (
           <Camera
