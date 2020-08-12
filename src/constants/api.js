@@ -12,6 +12,7 @@ function getdata() {
 }
 
 async function add_data(img, mode, gread) {
+  console.log(gread);
   try {
     await firestore()
       .collection('Datas')
@@ -31,7 +32,7 @@ async function add_data(img, mode, gread) {
 const uploadToFirebase = async (img, mode, gread) => {
   var storageRef = storage().ref(
     `${
-      mode ? (gread > 100 ? 'diabetic' : 'notDiabetic') : 'analyse'
+      mode ? (gread > 99 ? 'diabetic' : 'notDiabetic') : 'analyse'
     }${createFileName()}`,
   );
 

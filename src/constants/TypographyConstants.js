@@ -31,6 +31,10 @@ const typography = StyleSheet.create({
     fontFamily: font.proximaNovaExtraBold,
     fontSize: fontSize.h1,
   },
+  medlargeText: {
+    fontFamily: font.montserrat,
+    fontSize: fontSize.h3,
+  },
   mediumTextSemiBold: {
     fontFamily: font.montserratSemiBold,
     fontSize: fontSize.h6,

@@ -1,5 +1,6 @@
 import React from 'react';
 import Camera from '../Presentational/Camera';
+import Picker from '../Presentational/Picker';
 import {
   StatusBar,
   Image,
@@ -27,9 +28,10 @@ import {
   createFileName,
   uriToBlob,
 } from '../../constants/functionalConstants';
+import {typography} from '../../constants/TypographyConstants';
 import {Toast} from '../Presentational/Utils';
 import {ImgPrevActionButton} from '../Presentational';
-import {isEye, getdata, add_data, uploadToFirebase} from '../../constants/api';
+import {isEye, getdata, add_data} from '../../constants/api';
 import {SafeAreaView} from 'react-native-safe-area-context';
 // Global Constants
 var PATH = RNFS.ExternalStorageDirectoryPath + '/iGlycosa';
@@ -46,63 +48,17 @@ async function hasAndroidPermission() {
   return status === 'granted';
 }
 
-const TextIP = ({onValueChange}) => {
-  const [value, setValue] = React.useState('90');
-
-  return (
-    <View
-      style={{
-        position: 'absolute',
-        bottom: '7%',
-        left: '10%',
-        // borderColor: colors.accent,
-        // borderWidth: 2,
-        display: 'flex',
-        // width: '80%',
-        flexDirection: 'row',
-      }}>
-      <TextInput
-        onChangeText={text => {
-          setValue(text);
-          onValueChange(text);
-        }}
-        value={value}
-        keyboardType="decimal-pad"
-        maxLength={3}
-        style={{
-          // zIndex: 10000,
-          borderColor: colors.accent,
-          borderBottomWidth: 2,
-          fontSize: 24,
-          color: colors.ternary,
-          marginRight: 3,
-          // position: 'absolute',
-          // bottom: '7%',
-          // left: '10%',
-        }}
-      />
-      <Text
-        style={{
-          textAlignVertical: 'center',
-          fontSize: 28,
-          color: colors.safeGreen,
-        }}>
-        mg / dL
-      </Text>
-    </View>
-  );
-};
-
 export default class example extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      oimg: null,
+      // img:
+      //   'https://upload.wikimedia.org/wikipedia/commons/8/8f/Human_eye_with_blood_vessels.jpg',
       img: null,
       isEye: false,
       isEyePdComplete: false,
-      g_reading: 90,
     };
+    this.g_reading;
     console.log(this.props.route.params.mode ? 'Upload Mode' : 'Analyze Mode');
     // getdata();
     // console.log(geturl('iG_20200712_030518974.jpg'));
@@ -110,7 +66,7 @@ export default class example extends React.Component {
   }
 
   _handleChange(val) {
-    this.setState({g_reading: parseInt(val)});
+    this.g_reading = val;
   }
 
   _handleCloseClick() {
@@ -121,7 +77,6 @@ export default class example extends React.Component {
   async _onPicture(data) {
     controller = new AbortController();
     const {signal} = controller;
-    this.setState({oimg: data.uri});
     const finderWidth = Math.round(data.width * 0.48);
     // console.log(finderWidth);
     const cropData = {
@@ -133,6 +88,8 @@ export default class example extends React.Component {
     };
     try {
       const croppedImageURI = await ImageEditor.cropImage(data.uri, cropData);
+      await RNFS.unlink(data.uri);
+
       if (croppedImageURI) {
         this.setState({img: croppedImageURI});
         uriToBlob(croppedImageURI)
@@ -157,11 +114,9 @@ export default class example extends React.Component {
 
   async _onBackToCamera() {
     controller.abort();
-    await RNFS.unlink(this.state.oimg);
     await RNFS.unlink(this.state.img);
     this.setState({
       img: null,
-      oimg: null,
       isEyePdComplete: false,
       isEye: false,
     });
@@ -179,7 +134,7 @@ export default class example extends React.Component {
     //   ),
     // );
     // uploadToFirebase(this.state.img).then(res => console.log(res));
-    add_data(this.state.img, this.props.route.params.mode, this.state.g_reading)
+    add_data(this.state.img, this.props.route.params.mode, this.g_reading)
       .then(msg => Toast(msg))
       .catch(err => Toast(err.message));
     this._onBackToCamera();
@@ -235,16 +190,25 @@ export default class example extends React.Component {
                       />
                     </>
                   ) : (
-                    <Text>Eye not found! ReTake the image</Text>
+                    <Text style={[typography.accentBody]}>
+                      Eye not found! ReTake the image
+                    </Text>
                   )
                 ) : (
-                  <Text>Analyzing</Text>
+                  <Text style={[typography.accentBody]}>Analyzing</Text>
                 )}
               </View>
             </View>
             {isEye ? (
               this.props.route.params.mode ? (
-                <TextIP onValueChange={this._handleChange.bind(this)} />
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                  }}>
+                  {/* <TextIP onValueChange={this._handleChange.bind(this)} /> */}
+                  <Picker onValueChange={this._handleChange.bind(this)} />
+                </View>
               ) : (
                 <></>
               )

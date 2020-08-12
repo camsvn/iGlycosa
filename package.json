@@ -5,6 +5,7 @@
   "scripts": {
     "android": "npx react-native run-android",
     "ios": "npx react-native run-ios",
+    "dstart": "adb -s ZY223XTDRC reverse tcp:8081 tcp:8081 && react-native start",
     "start": "react-native start",
     "start2": "react-native start --port 8082",
     "start3": "react-native start --port 8083",
