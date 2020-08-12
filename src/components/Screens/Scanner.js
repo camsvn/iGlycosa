@@ -242,7 +242,15 @@ export default class example extends React.Component {
                 )}
               </View>
             </View>
-            <TextIP onValueChange={this._handleChange.bind(this)} />
+            {isEye ? (
+              this.props.route.params.mode ? (
+                <TextIP onValueChange={this._handleChange.bind(this)} />
+              ) : (
+                <></>
+              )
+            ) : (
+              <></>
+            )}
           </View>
         ) : (
           <Camera
