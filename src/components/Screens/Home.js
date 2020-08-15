@@ -10,6 +10,7 @@ import {
 // 3rd-Party package imports
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import firestore from '@react-native-firebase/firestore';
 // local imports
 import {
   Block,
@@ -23,21 +24,43 @@ import {
   viewportWidth,
   proportionedPixel as pp,
   widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
 } from './../../constants/DimensionConstants';
 import {colors} from './../../constants/ColorConstants';
 import {icons} from './../../constants/ImageConstants';
 import * as mocks from './../../constants/MockData';
+import Chart from '../Screens/svgChart';
+import {getdata} from '../../constants/api';
+
 // Global Constants
 const SLIDER_FIRST_ITEM = 1;
 const SLIDE_WIDTH = wp(88);
-
+const SLIDE_HEIGHT = hp(85);
+// let read;
 class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       slider1ActiveSlide: SLIDER_FIRST_ITEM,
       uploadMode: true,
+      read: 0,
     };
+  }
+
+  async _fetchLatestData() {
+    await firestore()
+      .collection('Datas')
+      .orderBy('createdAt', 'desc')
+      .limit(1)
+      .onSnapshot(QuerySnapshot => {
+        console.log('Got Users collection result.', QuerySnapshot.docs.length);
+        QuerySnapshot.forEach(documentSnapshot => {
+          console.log('Fetched', documentSnapshot.data().g_reading);
+          let data = documentSnapshot.data();
+          this.setState({read: data.g_reading});
+          // return documentSnapshot.data();
+        });
+      });
   }
 
   _handleOnSnapToItem(index) {
@@ -61,9 +84,19 @@ class Main extends React.Component {
     return (
       <Block center>
         <Block flex={false} card center middle style={styles.graphContainer}>
-          <Text large primary center>
+          <Chart />
+          {/* <Text
+            large
+            primary
+            center
+            style={{
+              borderWidth: 2,
+              borderColor: colors.red,
+              flex: 1,
+              borderRadius: 15,
+            }}>
             {item.title}
-          </Text>
+          </Text> */}
         </Block>
         {/* </View> */}
         <Block flex={false} color="secondary" style={styles.graphDefContainer}>
@@ -106,8 +139,14 @@ class Main extends React.Component {
     );
   }
 
+  componentDidMount() {
+    // getdata().then(res => this.setState({read: res}));
+    this._fetchLatestData();
+  }
+
   render() {
-    const {uploadMode} = this.state;
+    const {uploadMode, read} = this.state;
+    console.log(read !== 0 ? read : '--');
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: colors.primary}}>
         <StatusBar backgroundColor={'#076C63'} barStyle="light-content" />
@@ -124,10 +163,13 @@ class Main extends React.Component {
                   11:00 PM
                 </Text>
                 <Divider radius={3} />
-                <Indicator color={colors.warningRed}>HIGH</Indicator>
+                <Indicator
+                  color={read > 100 ? colors.warningRed : colors.safeGreen}>
+                  {read > 100 ? 'HIGH' : read >= 80 ? 'NORM' : 'LOW'}
+                </Indicator>
               </Block>
               <Block flex={0.6}>
-                <DiabeticMeasure value={125} />
+                <DiabeticMeasure value={read !== 0 ? read : '--'} />
               </Block>
             </Block>
             <Divider height={'90%'} radius={2} color={'rgba(0,0,15,0.6)'} />

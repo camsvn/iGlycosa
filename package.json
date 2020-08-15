@@ -10,7 +10,9 @@
     "start2": "react-native start --port 8082",
     "start3": "react-native start --port 8083",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "clean:build:android": "rmdir android\\app\\build",
+    "prod:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
   },
   "dependencies": {
     "@react-native-community/image-editor": "^2.3.0",
@@ -20,15 +22,21 @@
     "@react-native-firebase/storage": "^7.3.1",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
+    "fusioncharts": "^3.15.2",
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-native-camera": "^3.30.0",
+    "react-native-chart-kit": "^6.5.0",
     "react-native-fs": "^2.16.6",
+    "react-native-fusioncharts": "^4.1.2",
     "react-native-gesture-handler": "^1.7.0",
     "react-native-reanimated": "^1.11.0",
     "react-native-safe-area-context": "^3.1.4",
     "react-native-screens": "^2.10.1",
-    "react-native-snap-carousel": "^3.9.1"
+    "react-native-snap-carousel": "^3.9.1",
+    "react-native-svg": "^12.1.0",
+    "react-native-svg-charts": "^5.4.0",
+    "react-native-webview": "^10.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

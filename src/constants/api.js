@@ -3,16 +3,53 @@ import storage from '@react-native-firebase/storage';
 import {createFileName} from './functionalConstants';
 
 // const dataCollection = await firestore().collection('Datas').get();
-function getdata() {
-  firestore()
-    .collection('Datas')
-    .get()
-    .then(res => console.log('res', res.docs.length));
-  // console.log('fetched', users.docs);
+async function getdata() {
+  let data;
+  let collection;
+
+  // const sub = await firestore()
+  //   .collection('Datas')
+  //   .orderBy('createdAt', 'desc')
+  //   .limit(1)
+  //   .onSnapshot(QuerySnapshot => {
+  //     console.log('Got Users collection result.', QuerySnapshot.docs.length);
+  //     QuerySnapshot.forEach(documentSnapshot => {
+  //       console.log('Fetched', documentSnapshot.data().g_reading);
+  //       data = documentSnapshot.data();
+  //       // return documentSnapshot.data();
+  //     });
+  //   }, onError);
+
+  // console.log('PPP', data);
+  //   .get();
+  // if (typeof collection !== 'undefined') {
+  //   collection.forEach(documentSnapshot => {
+  //     console.log('Fetched', documentSnapshot.data().g_reading);
+  //     data = documentSnapshot.data();
+  //   });
+  // }
+  // return data.g_reading;
+
+  // console.log('PPP', data);
+
+  return data ? data.g_reading : 10;
+}
+
+function onResult(QuerySnapshot) {
+  console.log('Got Users collection result.', QuerySnapshot.docs.length);
+  QuerySnapshot.forEach(documentSnapshot => {
+    console.log('Fetched', documentSnapshot.data().g_reading);
+    // data = documentSnapshot.data();
+    return documentSnapshot.data();
+  });
+}
+
+function onError(error) {
+  console.error(error);
 }
 
 async function add_data(img, mode, gread) {
-  console.log(gread);
+  // console.log(gread);
   try {
     await firestore()
       .collection('Datas')

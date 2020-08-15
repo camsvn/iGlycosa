@@ -6,6 +6,7 @@ import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 
 import Home from './components/Screens/Home';
 import Scanner from './components/Screens/Scanner';
+import Chart from './components/Screens/svgChart';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ export default class Main extends Component {
               headerShown: false,
               ...TransitionPresets.FadeFromBottomAndroid,
             }}>
+            <Stack.Screen name="Chart" component={Chart} />
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Scanner" component={Scanner} />
           </Stack.Navigator>
