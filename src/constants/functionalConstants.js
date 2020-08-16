@@ -42,6 +42,7 @@ const squareImage = (edgeLength, imgLength) => {
 };
 
 const uriToBlob = uri => {
+  // console.log(uri);
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.onload = function() {

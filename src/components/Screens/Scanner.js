@@ -31,7 +31,7 @@ import {
 import {typography} from '../../constants/TypographyConstants';
 import {Toast} from '../Presentational/Utils';
 import {ImgPrevActionButton} from '../Presentational';
-import {isEye, getdata, add_data} from '../../constants/api';
+import {isEye, isDiabetic, add_data} from '../../constants/api';
 import {SafeAreaView} from 'react-native-safe-area-context';
 // Global Constants
 var PATH = RNFS.ExternalStorageDirectoryPath + '/iGlycosa';
@@ -55,8 +55,10 @@ export default class example extends React.Component {
       // img:
       //   'https://upload.wikimedia.org/wikipedia/commons/8/8f/Human_eye_with_blood_vessels.jpg',
       img: null,
-      isEye: false,
+      isImageEye: false,
       isEyePdComplete: false,
+      isEyeDiabetic: false,
+      isDiabeticPdComplete: false,
     };
     this.g_reading;
     console.log(this.props.route.params.mode ? 'Upload Mode' : 'Analyze Mode');
@@ -92,14 +94,27 @@ export default class example extends React.Component {
 
       if (croppedImageURI) {
         this.setState({img: croppedImageURI});
-        uriToBlob(croppedImageURI)
-          .then(blob => isEye(blob, signal))
-          .then(res => {
+
+        const blob = await uriToBlob(croppedImageURI);
+        isEye(blob, signal)
+          .then(async res => {
             if (res) {
               this.setState({isEyePdComplete: true});
-              res === 'eye' && this.setState({isEye: true});
+              res === 'eye' && this.setState({isImageEye: true});
               // Toast(res);
-              console.log(res);
+              console.log('Modal 1 Prediction:', res);
+              if (!this.props.route.params.mode) {
+                // console.log('Analyze Prediction');
+                const newBlob = await uriToBlob(croppedImageURI);
+                isDiabetic(newBlob, signal).then(response => {
+                  if (response) {
+                    this.setState({isDiabeticPdComplete: true});
+                    response === 'diabetic' &&
+                      this.setState({isEyeDiabetic: true});
+                    console.log('Modal 2 Prediction:', response);
+                  }
+                });
+              }
             }
           })
           .catch(err => {
@@ -118,7 +133,9 @@ export default class example extends React.Component {
     this.setState({
       img: null,
       isEyePdComplete: false,
-      isEye: false,
+      isImageEye: false,
+      isEyeDiabetic: false,
+      isDiabeticPdComplete: false,
     });
   }
 
@@ -140,8 +157,36 @@ export default class example extends React.Component {
     this._onBackToCamera();
   }
 
+  // async _prediction(img) {
+  //   uriToBlob(img)
+  //     .then(blob => {
+  //       console.log('AMAL', blob);
+  //       isEye(blob);
+  //     })
+  //     .then(res => {
+  //       if (res) {
+  //         this.setState({isEyePdComplete: true});
+  //         console.log(res);
+  //         return res;
+  //         // return (
+  //         //   <Text style={[typography.accentBody]}>{res}</Text>
+  //         // );
+  //       }
+  //     })
+  //     .catch(err => {
+  //       Toast(err.message);
+  //       console.log(err);
+  //     });
+  // }
+
   render() {
-    const {img, isEyePdComplete, isEye} = this.state;
+    const {
+      img,
+      isEyePdComplete,
+      isImageEye,
+      isEyeDiabetic,
+      isDiabeticPdComplete,
+    } = this.state;
     return (
       // <View style={{flex: 1}}>
       <SafeAreaView style={{flex: 1}}>
@@ -178,17 +223,25 @@ export default class example extends React.Component {
               <Image source={{uri: img}} style={styles.squareImage} />
               <View style={styles.buttonContainer}>
                 {isEyePdComplete ? (
-                  isEye ? (
-                    <>
-                      {/* <ImgPrevActionButton
-                      icon={icons.cancelButton}
-                      action={() => this._onBackToCamera()}
-                    /> */}
+                  isImageEye ? (
+                    this.props.route.params.mode ? (
                       <ImgPrevActionButton
                         icon={icons.acceptButton}
                         action={() => this._savePicture(img)}
                       />
-                    </>
+                    ) : isDiabeticPdComplete ? (
+                      isEyeDiabetic ? (
+                        <Text style={[typography.accentBody]}>Diabetic</Text>
+                      ) : (
+                        <Text style={[typography.accentBody]}>
+                          Not Diabetic
+                        </Text>
+                      )
+                    ) : (
+                      <Text style={[typography.accentBody]}>
+                        Analyzing the Eye
+                      </Text>
+                    )
                   ) : (
                     <Text style={[typography.accentBody]}>
                       Eye not found! ReTake the image
@@ -199,7 +252,7 @@ export default class example extends React.Component {
                 )}
               </View>
             </View>
-            {isEye ? (
+            {isImageEye ? (
               this.props.route.params.mode ? (
                 <View
                   style={{

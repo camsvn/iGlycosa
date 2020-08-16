@@ -126,4 +126,31 @@ const isEye = (blob, signal) => {
   });
 };
 
-export {isEye, getdata, add_data, uploadToFirebase, toDate};
+const isDiabetic = (blob, signal) => {
+  return new Promise((resolve, reject) => {
+    fetch(
+      'https://iseye.cognitiveservices.azure.com/customvision/v3.0/Prediction/7fade983-dd09-4952-96b0-9956635e08a3/classify/iterations/Iteration1/image',
+      {
+        signal,
+        method: 'POST',
+        headers: {
+          //   Accept: 'application/json',
+          'Prediction-Key': '1ecb570264f6477f96d9b959f4b14539',
+          'Content-Type': 'application/octet-stream',
+        },
+        body: blob,
+      },
+    )
+      .then(res => res.json())
+      .then(data => {
+        blob.close();
+        // console.log(data.predictions[0].tagName);
+        resolve(data.predictions[0].tagName);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+};
+
+export {isEye, getdata, add_data, uploadToFirebase, toDate, isDiabetic};
