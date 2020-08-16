@@ -3,22 +3,20 @@ import storage from '@react-native-firebase/storage';
 import {createFileName} from './functionalConstants';
 
 // const dataCollection = await firestore().collection('Datas').get();
-async function getdata() {
-  let data;
-  let collection;
-
-  // const sub = await firestore()
-  //   .collection('Datas')
-  //   .orderBy('createdAt', 'desc')
-  //   .limit(1)
-  //   .onSnapshot(QuerySnapshot => {
-  //     console.log('Got Users collection result.', QuerySnapshot.docs.length);
-  //     QuerySnapshot.forEach(documentSnapshot => {
-  //       console.log('Fetched', documentSnapshot.data().g_reading);
-  //       data = documentSnapshot.data();
-  //       // return documentSnapshot.data();
-  //     });
-  //   }, onError);
+function getdata() {
+  firestore()
+    .collection('Datas')
+    .orderBy('createdAt', 'desc')
+    .limit(3)
+    .onSnapshot(QuerySnapshot => {
+      console.log('Got Users collection result.', QuerySnapshot.docs.length);
+      return QuerySnapshot;
+      // QuerySnapshot.forEach(documentSnapshot => {
+      //   console.log('Fetched', documentSnapshot.data().g_reading);
+      //   data = documentSnapshot.data();
+      //   setState({data: documentSnapshot.data()});
+      // });
+    }, onError);
 
   // console.log('PPP', data);
   //   .get();
@@ -32,8 +30,27 @@ async function getdata() {
 
   // console.log('PPP', data);
 
-  return data ? data.g_reading : 10;
+  // return data ? data.g_reading : 10;
 }
+
+const toDate = createdAt => {
+  if (createdAt) {
+    const timeStamp = new firestore.Timestamp(
+      createdAt.seconds,
+      createdAt.nanoseconds,
+    );
+    const date = timeStamp.toDate();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    // console.log(strTime);
+    return strTime;
+  }
+};
 
 function onResult(QuerySnapshot) {
   console.log('Got Users collection result.', QuerySnapshot.docs.length);
@@ -109,4 +126,4 @@ const isEye = (blob, signal) => {
   });
 };
 
-export {isEye, getdata, add_data, uploadToFirebase};
+export {isEye, getdata, add_data, uploadToFirebase, toDate};

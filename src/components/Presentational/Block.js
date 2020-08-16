@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
   ternary: {backgroundColor: colors.ternary},
   lightred: {backgroundColor: colors.lightred},
   lightgreen: {backgroundColor: colors.lightgreen},
+  safeYellow: {backgroundColor: colors.safeYellow},
   black: {backgroundColor: colors.black},
   red: {backgroundColor: colors.red},
 });

@@ -30,11 +30,11 @@ import {colors} from './../../constants/ColorConstants';
 import {icons} from './../../constants/ImageConstants';
 import * as mocks from './../../constants/MockData';
 import Chart from '../Screens/svgChart';
-import {getdata} from '../../constants/api';
+import {getdata, toDate} from '../../constants/api';
 
 // Global Constants
 const SLIDER_FIRST_ITEM = 1;
-const SLIDE_WIDTH = wp(88);
+const SLIDE_WIDTH = wp(95); // 88 for multiple side items
 const SLIDE_HEIGHT = hp(85);
 // let read;
 class Main extends React.Component {
@@ -43,23 +43,44 @@ class Main extends React.Component {
     this.state = {
       slider1ActiveSlide: SLIDER_FIRST_ITEM,
       uploadMode: true,
-      read: 0,
+      data: null,
     };
   }
 
-  async _fetchLatestData() {
-    await firestore()
+  _fetchLatestData() {
+    firestore()
       .collection('Datas')
       .orderBy('createdAt', 'desc')
       .limit(1)
       .onSnapshot(QuerySnapshot => {
-        console.log('Got Users collection result.', QuerySnapshot.docs.length);
+        // console.log('Got Users collection result.', QuerySnapshot.size);
         QuerySnapshot.forEach(documentSnapshot => {
-          console.log('Fetched', documentSnapshot.data().g_reading);
+          // console.log('Fetched', documentSnapshot.data().createdAt.toDate());
           let data = documentSnapshot.data();
-          this.setState({read: data.g_reading});
-          // return documentSnapshot.data();
+          this.setState({
+            read: data.g_reading,
+            createdAt: toDate(data.createdAt),
+          });
         });
+      });
+  }
+
+  _fetchData() {
+    firestore()
+      .collection('Datas')
+      .where('isUpload', '==', true)
+      .orderBy('createdAt', 'desc')
+      .limit(20)
+      .onSnapshot(QuerySnapshot => {
+        const CUdata = [];
+        // this.setState({data: QuerySnapshot});
+        QuerySnapshot.forEach(documentSnapshot => {
+          const id = documentSnapshot.id;
+          const time = toDate(documentSnapshot.data().createdAt);
+          const newDoc = {id, time, ...documentSnapshot.data()};
+          CUdata.push(newDoc);
+        });
+        this.setState({data: CUdata.length > 0 ? CUdata : null});
       });
   }
 
@@ -84,7 +105,8 @@ class Main extends React.Component {
     return (
       <Block center>
         <Block flex={false} card center middle style={styles.graphContainer}>
-          <Chart />
+          {/* <Chart data={this.state.data ? this.state.data : null} /> */}
+          <Chart fetch={11} />
           {/* <Text
             large
             primary
@@ -100,7 +122,7 @@ class Main extends React.Component {
         </Block>
         {/* </View> */}
         <Block flex={false} color="secondary" style={styles.graphDefContainer}>
-          <Text small accent style={{marginHorizontal: 10}}>
+          <Text small accent center style={{marginHorizontal: 10}}>
             {item.title}
           </Text>
         </Block>
@@ -113,40 +135,41 @@ class Main extends React.Component {
       <Block
         card
         center
-        color={item.gcount > 100 ? 'ternary' : 'secondary'}
+        color={item.g_reading > 100 ? 'ternary' : 'secondary'}
         style={styles.logCardContainer}>
         <Block flex={false} style={styles.logCardIconContainer}>
           <Image
             style={styles.logCardIcon}
             resizeMode="center"
             source={{
-              uri: item.gcount > 100 ? icons.redArrow : icons.greenArrow,
+              uri: item.g_reading > 100 ? icons.redArrow : icons.greenArrow,
             }}
           />
         </Block>
         <Block flex={false} top={'-3%'}>
           <Text center large black top={'8%'}>
-            {item.gcount}
+            {item.g_reading}
           </Text>
           <Text center mediumBold black top={'-5%'}>
             mg/dL
           </Text>
           <Text small accent center>
-            {item.time}
+            {item.time ? item.time : '--'}
           </Text>
         </Block>
       </Block>
     );
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // getdata().then(res => this.setState({read: res}));
-    this._fetchLatestData();
+    // this._fetchLatestData();
+    this._fetchData();
   }
 
   render() {
-    const {uploadMode, read} = this.state;
-    console.log(read !== 0 ? read : '--');
+    const {uploadMode, data} = this.state;
+    // console.log(data && data[0]);
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: colors.primary}}>
         <StatusBar backgroundColor={'#076C63'} barStyle="light-content" />
@@ -160,16 +183,32 @@ class Main extends React.Component {
             <Block flex={0.5}>
               <Block flex={0.4} row middle center space="evenly">
                 <Text mediumSemiBold black>
-                  11:00 PM
+                  {/* 11:00 PM */}
+                  {/* {createdAt ? createdAt : '--'} */}
+                  {data ? (data[0].time ? data[0].time : '--') : '--'}
                 </Text>
                 <Divider radius={3} />
                 <Indicator
-                  color={read > 100 ? colors.warningRed : colors.safeGreen}>
-                  {read > 100 ? 'HIGH' : read >= 80 ? 'NORM' : 'LOW'}
+                  color={
+                    data
+                      ? data[0].g_reading > 100
+                        ? colors.warningRed
+                        : data[0].g_reading >= 80
+                        ? colors.safeGreen
+                        : colors.safeYellow
+                      : colors.secondary
+                  }>
+                  {data
+                    ? data[0].g_reading > 100
+                      ? 'HIGH'
+                      : data[0].g_reading >= 80
+                      ? 'NORM'
+                      : 'LOW'
+                    : '--'}
                 </Indicator>
               </Block>
               <Block flex={0.6}>
-                <DiabeticMeasure value={read !== 0 ? read : '--'} />
+                <DiabeticMeasure value={data ? data[0].g_reading : '--'} />
               </Block>
             </Block>
             <Divider height={'90%'} radius={2} color={'rgba(0,0,15,0.6)'} />
@@ -225,7 +264,7 @@ class Main extends React.Component {
           </Block>
           <Block flex={0.3} width={'100%'}>
             <FlatList
-              data={mocks.logData}
+              data={data ? data : []}
               horizontal={true}
               style={styles.logContainer}
               renderItem={this._renderLogCards.bind(this)}

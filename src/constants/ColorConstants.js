@@ -9,6 +9,7 @@ const colors = {
   grey: '#707070',
   warningRed: '#D65567',
   safeGreen: '#9BE5AA',
+  safeYellow: '#EED202',
   red: '#CC2A41',
 };
 
